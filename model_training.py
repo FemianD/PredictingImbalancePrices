@@ -11,6 +11,7 @@ from sklearn.gaussian_process.kernels import RBF, ConstantKernel as C, ExpSineSq
 from sklearn.svm import SVR
 from sklearn.linear_model import Ridge, Lasso
 from sklearn.ensemble import RandomForestRegressor
+import matplotlib.pyplot as plt
 
 # Create df for model
 df = pd.read_csv('final_dataset.csv', delimiter=',')
@@ -24,12 +25,12 @@ df['Date'] = pd.to_numeric(df['Date'], errors='coerce')
 df = df.dropna()
 
 # Set variales for Model training
-X = df.drop('imbalance_price', axis=1).values
+X = df.values
 scaler = StandardScaler()
 X = scaler.fit_transform(X)
 y = df["imbalance_price"].values
 
-
+## The following code for the models has been reused and adapted from SciKit-Learn
 # Define kernel for Gaussian Process
 kernel = (C(1.0, (0.01, 100)) * RBF(length_scale=1.0, length_scale_bounds=(0.01, 100)) + C(1.0, (0.01, 100)) * ExpSineSquared(length_scale=1.0, periodicity=1.0, 
                                                 length_scale_bounds=(0.01, 100), periodicity_bounds=(0.01, 100)) + DotProduct() ) 
@@ -122,6 +123,7 @@ print(f'Average Forecast Bias: {average_forecast_bias}')
 
 # Regression
 print("Regression")
+
 # Regularization
 ridge = Ridge()
 lasso = Lasso()
@@ -247,3 +249,4 @@ print(f'Average Forecast Bias: {average_forecast_bias}')
 # Feature Importance
 feature_importance = best_model.feature_importances_
 print("Feature Importance:", feature_importance)
+
